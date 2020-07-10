@@ -45,7 +45,7 @@
                       </div>
                     </div>
                   </div>
-                  <div v-observe.always="loadmore" class="footer">{{list.complete?'到底了~':''}}</div>
+                  <div :data-id="list.id" v-observe.always="getlistdata" class="footer">{{list.complete?'到底了~':''}}</div>
                 </div>
               </div>
             </div>
@@ -202,14 +202,11 @@ export default {
     goto(v) {
       location.href = v.url;
     },
-    loadmore() {
-      this.getlistdata();
+    loadmore(id) {
+      this.getlistdata(id);
     },
     request(list) {
-      if (list.loading){
-        list.msg()
-        return;
-      }
+      if (list.loading) return;
       list.loading = true;
       return this.axios
         .post("http://10.228.88.220:17734/rest/api/red/queryAll", {
@@ -247,9 +244,12 @@ export default {
           return res.status === 200;
         });
     },
-    async getlistdata() {
+    async getlistdata(id) {
+      if(!id){
+        id=this.activeId
+      }
       console.warn("getlistdata");
-      let list = this.alllist.find(v => v.id === this.activeId);
+      let list = this.alllist.find(v => v.id === id);
       if (list.complete) return;
       list.msg = this.$Message.loading({
         content: "加载中...",

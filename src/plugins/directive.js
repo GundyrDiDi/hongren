@@ -20,7 +20,8 @@ Vue.mixin({
             await wait(delay)
             ;[].concat(value).forEach(v => {
               if (typeof v === 'function') {
-                v()
+                console.log(el)
+                v(parseInt(el.dataset.id))
               } else if (typeof v === 'string') {
                 el.classList.add(...v.split(' '))
                 setTimeout(() => {

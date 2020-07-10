@@ -36,7 +36,7 @@ Vue.mixin({
           }
         }
         el.style.visibility = 'hidden'
-        await wait(300)
+        await wait(3000)
         const io = new IntersectionObserver(cb, options)
         io.observe(ob)
       }

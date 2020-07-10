@@ -119,6 +119,11 @@ export default {
   },
   watch: {
     font() {
+      let font = parseInt(this.font);
+      this.$Message.config({
+        top: font * 4,
+        duration: 0
+      });
       this.initColumn();
     },
     cc() {
@@ -249,12 +254,12 @@ export default {
       });
       let success = await this.request(list);
       if (this.firstLoad) {
-        this.alllist.forEach(v => {
-          if (v.id !== this.activeId) {
-            this.request(v);
-          }
-        });
-        this.firstLoad = false;
+        // this.alllist.forEach(v => {
+        //   if (v.id !== this.activeId) {
+        //     this.request(v);
+        //   }
+        // });
+        // this.firstLoad = false;
       }
       if (success) {
         msg();

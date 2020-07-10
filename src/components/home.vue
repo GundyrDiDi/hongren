@@ -206,7 +206,7 @@ export default {
       this.getlistdata();
     },
     request(list) {
-      if (list.loading) return;
+      if (list.loading) return true;
       list.loading = true;
       return this.axios
         .post("http://10.228.88.220:17734/rest/api/red/queryAll", {

@@ -24,11 +24,7 @@
       </el-popover>
       <div class="swiper-container swiper1">
         <div class="swiper-wrapper">
-          <div
-            class="swiper-slide outside"
-            v-for="(list) in alllist"
-            :key="list.name"
-          >
+          <div class="swiper-slide outside" v-for="(list) in alllist" :key="list.name">
             <div class="swiper-container swiper2" :class="'swiper1-'+list.id">
               <div class="swiper-wrapper">
                 <div class="swiper-slide">
@@ -219,12 +215,13 @@ export default {
       this.getlistdata(id);
     },
     toformat(num) {
-      // if(num>10000){
-      //   return (num / 10000).toFixed(1) + "w 粉丝"
-      // }else{
-      //   return (num / 1000).toFixed(2) + "k 粉丝"
-      // }
-      return num + " w 粉丝";
+      if(num>10000){
+        return (num / 10000).toFixed(1) + "W 粉丝"
+      }else if(num>1000){
+        return (num / 1000).toFixed(2) + "K 粉丝"
+      }else{
+        return num +' 粉丝'
+      }
     },
     request(list) {
       if (list.loading) return;
@@ -250,14 +247,16 @@ export default {
               data.map(v => loadimg(v.head, this.defaultHead))
             );
             data.forEach((v, i, arr) => {
-              if (v.head !== heads[i]) {
-                let temp=v.head
-                v.head = heads[i];
-                let time=setInterval(() => {
-                  arr[i].head=temp
-                  clearInterval(time)
-                },3000);
-              }
+              const load = async () => {
+                if (v.head !== heads[i]) {
+                  let temp = v.head;
+                  v.head = heads[i];
+                  arr[i].head = temp;
+                }else{
+                  clearInterval(time);
+                }
+              };
+              let time = setInterval(load, 3000);
             });
             list.listdata.push(...data);
             list.page++;
@@ -367,7 +366,7 @@ export default {
   .swiper1-4 {
     background: #e9f1ede3;
   }
-  
+
   .swiper2 .swiper-slide {
     height: auto !important;
     width: auto !important;
@@ -403,7 +402,7 @@ export default {
   }
   .footer {
     height: 1rem;
-    color:#aaa;
+    color: #aaa;
   }
   .right-bottom {
     position: absolute;

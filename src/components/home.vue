@@ -206,7 +206,6 @@ export default {
       return this.$swiper(".swiper1-" + name, {
         direction: "vertical",
         slidesPerView: "auto",
-        allowSlidePrev:false,
         resistanceRatio: 0.7,
         freeMode: true
       });

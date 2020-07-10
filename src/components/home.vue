@@ -353,7 +353,7 @@ export default {
     background: #e9f1ede3;
   }
   .outside{
-    height:100vh;
+    height:100%;
   }
   .swiper2 .swiper-slide {
     height: auto !important;

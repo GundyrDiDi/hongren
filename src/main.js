@@ -8,7 +8,6 @@ import 'normalize.css'
 import './plugins/directive'
 import './plugins/iview.js'
 import './assets/swiper.css'
-import VConsole from 'vconsole'
 
 Vue.config.productionTip = false
 
@@ -16,5 +15,3 @@ new Vue({
   render: h => h(App),
 }).$mount('#app')
 
-let vc=new VConsole()
-console.log(vc)

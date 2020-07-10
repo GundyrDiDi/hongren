@@ -100,7 +100,7 @@ export default {
           fontsize: 0.6
         }
       },
-      cc: 2,
+      cc: 3,
       firstLoad: true,
       alllist: Object.entries({ 微博: 1, 小红书: 5, B站: 3, 抖音: 4 }).map(
         ([name, id]) => ({

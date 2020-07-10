@@ -261,6 +261,8 @@ export default {
         // });
         // this.firstLoad = false;
       }
+      console.log(list)
+      console.log(success)
       if (success) {
         msg();
       }

@@ -6,7 +6,7 @@ import { wait } from '@/plugins/util'
 Vue.mixin({
   directives: {
     observe: {
-      inserted (el, { arg, value, modifiers: { parent, hold, always } }) {
+      async inserted (el, { arg, value, modifiers: { parent, hold, always } }) {
         const options = {
           threshold: 0.3
         }
@@ -36,6 +36,7 @@ Vue.mixin({
           }
         }
         el.style.visibility = 'hidden'
+        await wait(300)
         const io = new IntersectionObserver(cb, options)
         io.observe(ob)
       }

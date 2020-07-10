@@ -257,12 +257,12 @@ export default {
       });
       let success = await this.request(list);
       if (this.firstLoad) {
-        this.alllist.forEach(v => {
-          if (v.id !== this.activeId) {
-            this.request(v);
-          }
-        });
-        this.firstLoad = false;
+        // this.alllist.forEach(v => {
+        //   if (v.id !== this.activeId) {
+        //     this.request(v);
+        //   }
+        // });
+        // this.firstLoad = false;
       }
       console.log(list)
       console.log(success)

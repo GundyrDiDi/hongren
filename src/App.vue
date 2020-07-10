@@ -1,34 +1,33 @@
 <template>
   <div id="app">
-    <Home/>
+    <Home />
   </div>
 </template>
 
 <script>
-import Home from '@/components/home.vue'
-
+import Home from "@/components/home.vue";
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    Home
+    Home,
   }
-}
+};
 </script>
 
 <style lang="less">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height:100%;
-  width:100%;
+  height: 100%;
+  width: 100%;
 }
 @scrollcolor: #ccc;
 @bgcolor: rgba(114, 203, 255, 0.3);
 @rem: 1rem; // 18px / 375drp
 div {
   box-sizing: border-box;
-  position:relative;
+  position: relative;
 }
 :root {
   --base: @rem;
@@ -43,9 +42,8 @@ div {
   --xxlfont: calc(@rem * 2.5);
   --xxxlfont: calc(@rem * 3);
   --lineshadow: 0 0px 2px 0px rgba(0, 0, 0, 0.2);
-  --boxshadow:
-  0 0 3px 3px rgba(6, 119, 212, 0.02),
-  0 0 6px 6px rgba(6, 119, 212, 0.02);
+  --boxshadow: 0 0 3px 3px rgba(6, 119, 212, 0.02),
+    0 0 6px 6px rgba(6, 119, 212, 0.02);
 }
 .bold {
   font-weight: 400;
@@ -53,7 +51,7 @@ div {
 .bolder {
   font-weight: 600;
 }
-.boldest{
+.boldest {
   font-weight: bold;
 }
 .yahei {
@@ -104,7 +102,7 @@ div {
   border-radius: 1px;
   background: #ededed;
 }
-.grid{
+.grid {
   display: grid;
 }
 .flex {
@@ -158,7 +156,7 @@ a {
   color: @fontcolor;
   font-size: var(--mfont);
   padding: 1rem 1.6rem;
-  border-radius: .8rem;
+  border-radius: 0.8rem;
   font-weight: 600;
   &:hover {
     color: darken(@fontcolor, 10%);
@@ -170,7 +168,7 @@ a {
   }
 }
 .link {
-  cursor:pointer;
+  cursor: pointer;
   font-size: var(--xmfont);
   color: @fontcolor;
   position: relative;
@@ -178,10 +176,8 @@ a {
     color: desaturate(@fontcolor, 50%) !important;
   }
 }
-.box{
-  box-shadow:
-  0 0 2px 8px rgba(0, 0, 0, 0.02),
-  0 0 2px 16px rgba(0, 0, 0, 0.02),
-  0 0 2px 24px rgba(0, 0, 0, 0.02);
+.box {
+  box-shadow: 0 0 2px 8px rgba(0, 0, 0, 0.02), 0 0 2px 16px rgba(0, 0, 0, 0.02),
+    0 0 2px 24px rgba(0, 0, 0, 0.02);
 }
 </style>

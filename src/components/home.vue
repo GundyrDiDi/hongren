@@ -10,16 +10,33 @@
       <b :style="translateX"></b>
     </div>
     <div class="content">
+      <el-popover placement="left" trigger="click">
+        <div>
+          <el-radio-group v-model="cc">
+            <el-radio-button :label="2" :key="2">2</el-radio-button>
+            <el-radio-button :label="3" :key="3">3</el-radio-button>
+            <el-radio-button :label="4" :key="4">4</el-radio-button>
+          </el-radio-group>
+        </div>
+        <div slot="reference" class="right-bottom flex-center">
+          <i class="el-icon-menu"></i>
+        </div>
+      </el-popover>
       <div class="swiper-container swiper1">
         <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <div class="swiper-container swiper2">
+          <div class="swiper-slide" v-for="v in alllist" :key="v.name">
+            <div class="swiper-container swiper2" :class="'swiper1-'+v.id">
               <div class="swiper-wrapper">
                 <div class="swiper-slide">
                   <div class="list flex">
                     <transition v-for="(v,i) in listdata" :key="i">
-                      <div @click="goto(v)" v-observe="'animated zoomIn faster'">
-                        <img :src="v.head" alt />
+                      <div
+                        class="card flex-col flex-center"
+                        @click="goto(v)"
+                        v-observe="'animated zoomIn faster'"
+                        :style="{width:column.width,height:column.height}"
+                      >
+                        <img :style="{width:column.imgsize}" :src="v.head" alt />
                         <div class="title">{{v.ownerId}}</div>
                         <div>{{v.customItem2__c}}</div>
                       </div>
@@ -30,9 +47,6 @@
               </div>
             </div>
           </div>
-          <div class="swiper-slide">2</div>
-          <div class="swiper-slide">3</div>
-          <div class="swiper-slide">4</div>
         </div>
       </div>
     </div>
@@ -49,7 +63,7 @@ export default {
   },
   data() {
     return {
-      activeTab: "微博",
+      activeId: 1,
       tabsnum: 4,
       index: 0,
       deviceHeight: 0,
@@ -58,30 +72,60 @@ export default {
       loading: false,
       page: 1,
       size: 10,
+      delay: 300,
+      font: null,
+      columnStyle: {
+        "2": {
+          radio: 1,
+          width: "44%",
+          height: 0,
+          imgsize: "85%",
+          fontsize: ""
+        },
+        "3": {
+          radio: 1.3,
+          width: "28%",
+          height: 0,
+          imgsize: "80%",
+          fontsize: ""
+        },
+        "4": {
+          radio: 1.5,
+          width: "21%",
+          height: 0,
+          imgsize: "70%",
+          fontsize: ""
+        }
+      },
+      cc: 3,
       alllist: [
         {
           id: "1",
           name: "微博",
           listdata: [],
-          page: 1
+          page: 1,
+          swiper: null
         },
         {
           id: "5",
           name: "小红书",
           listdata: [],
-          page: 1
+          page: 1,
+          swiper: null
         },
         {
           id: "3",
           name: "B站",
           listdata: [],
-          page: 1
+          page: 1,
+          swiper: null
         },
         {
           id: "4",
           name: "抖音",
           listdata: [],
-          page: 1
+          page: 1,
+          swiper: null
         }
       ],
       listdata: []
@@ -89,9 +133,23 @@ export default {
   },
   watch: {
     listdata() {
-      setTimeout(() => {
-        this.s2.updateSlides();
-      }, 1000);
+      //   setTimeout(() => {
+      //     this.s2.updateSlides();
+      //   }, this.delay);
+    },
+    font() {
+      let font = parseInt(this.font);
+      this.$Message.config({
+        top: font * 4,
+        duration: 0
+      });
+      this.initColumn();
+    },
+    cc() {
+      this.initColumn();
+      //   setTimeout(() => {
+      //     this.s2.updateSlides();
+      //   }, this.delay);
     }
   },
   computed: {
@@ -100,12 +158,27 @@ export default {
         transform: `translateX(${this.index * 100}%)`,
         transition: this.touch ? "" : "all .5s ease-in-out"
       };
+    },
+    column() {
+      return this.columnStyle[this.cc];
     }
   },
   methods: {
     flexView,
+    initColumn() {
+      let font = parseInt(this.font);
+      let num = parseInt(
+        (this.deviceHeight - font * 3) /
+          ((parseInt(this.column.width) / 100) *
+            this.deviceWidth *
+            this.column.radio)
+      );
+      console.log((this.deviceHeight - font * 3) / num);
+      this.column.height = (this.deviceHeight - font * 3) / num + "px";
+      this.size = this.cc * num;
+    },
     changeTab(v, i) {
-      this.activeTab = v.name;
+      this.activeTab = v.id;
       this.index = i;
       this.s1.slideTo(i, 500);
     },
@@ -125,12 +198,17 @@ export default {
         }
       });
     },
-    initinside() {
-      this.s2 = this.$swiper(".swiper2", {
+    initinside(name) {
+      return this.$swiper(".swiper1-" + name, {
         direction: "vertical",
         slidesPerView: "auto",
-        resistanceRatio: 0.5,
-        freeMode: true
+        resistanceRatio: 0.7,
+        freeMode: true,
+        on:{
+            progress(){
+                console.log(this)
+            }
+        }
       });
     },
     goto() {},
@@ -139,10 +217,10 @@ export default {
     },
     async getlistdata() {
       console.log("getlistdata");
-      this.$Message.loading({
-        content: '正在处理, 请稍后...',
-        duration: 1000
-    })
+      let msg = this.$Message.loading({
+        content: "加载中, 请稍侯...",
+        duration: 0
+      });
       await wait();
       //   this.axios
       //     .post("http://10.228.88.9:8000/rest/api/red/queryAll", {
@@ -152,9 +230,9 @@ export default {
       //     .then(res => {
       //       console.log(res);
       //     });
-      this.loading = false;
+      msg();
       this.listdata = this.listdata.concat(
-        Array.from({ length: 15 }, () => {
+        Array.from({ length: this.size }, () => {
           return {
             //红人平台名称
             name: "微博",
@@ -186,8 +264,9 @@ export default {
   mounted() {
     this.flexView();
     this.initswiper();
-    this.getlistdata();
-    this.initinside();
+    this.alllist.forEach(v => {
+      v.swiper = this.initinside(v.id);
+    });
   }
 };
 </script>
@@ -200,7 +279,10 @@ export default {
 .nav {
   border-bottom: 1px solid #ddd;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-  z-index: 100;
+  z-index: 1200;
+  position: fixed;
+  width: 100%;
+  background: #fff;
   > div {
     font-size: var(--sfont);
     width: 25%;
@@ -224,13 +306,24 @@ export default {
   }
 }
 .content {
+  position: relative;
+  top: 3rem;
   height: calc(100% - 3rem);
   overflow: hidden;
   .swiper-container {
     height: 100%;
   }
-  .swiper2 {
+  .swiper1-1 {
     background: #f3f3f0cc;
+  }
+  .swiper1-3 {
+    background: #f0f2eca1;
+  }
+  .swiper1-5 {
+    background: #f8f1f5cc;
+  }
+  .swiper1-4 {
+    background: #e9f1ede3;
   }
   .swiper2 .swiper-slide {
     height: auto !important;
@@ -240,15 +333,15 @@ export default {
     justify-content: space-between;
     flex-wrap: wrap;
     padding: 0 0.5rem;
-    > div {
-      padding-top: 0.3rem;
-      width: 28%;
+    .card {
+      //   padding-top: 0.3rem;
+      //   width: 28%;
       text-align: center;
-      margin-top: 0.6rem;
+      //   margin-top: 0.6rem;
       font-size: var(--xxsfont);
     }
     img {
-      width: 80%;
+      //   width: 80%;
       border-radius: 50%;
       filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
     }
@@ -264,6 +357,20 @@ export default {
   }
   .footer {
     height: 1rem;
+  }
+  .right-bottom {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 1.5rem;
+    border-radius: 50%;
+    height: 2.2rem;
+    width: 2.2rem;
+    background: #61b0e8fc;
+    box-shadow: 0 0 2px 2px rgba(6, 119, 212, 0.1),
+      0 0 4px 4px rgba(6, 119, 212, 0.1);
+    z-index: 10;
+    font-size: var(--xmfont);
+    color: #fff;
   }
 }
 </style>

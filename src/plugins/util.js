@@ -10,7 +10,7 @@ export function flexView() {
     recalc();
   });
   const recalc = () => {
-    docEl.fontSize = 18 * (window.innerWidth / 375) + "px";
+    this.font=docEl.fontSize = 18 * (window.innerWidth / 375) + "px";
   };
   window.addEventListener("orientationchange", recalc, false);
   window.addEventListener("pageshow", recalc, false);
@@ -26,4 +26,8 @@ export function wait(time = 1000, promise) {
     delay = Promise.all([promise, delay]).then((res) => res[0]);
   }
   return delay;
+}
+
+export function preload(){
+    
 }

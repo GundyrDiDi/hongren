@@ -6,6 +6,7 @@ import './plugins/swiper.js'
 import './assets/animate.css'
 import 'normalize.css'
 import './plugins/directive'
+import './plugins/iview.js'
 
 Vue.config.productionTip = false
 

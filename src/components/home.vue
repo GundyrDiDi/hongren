@@ -253,8 +253,9 @@ export default {
               if (v.head !== heads[i]) {
                 let temp=v.head
                 v.head = heads[i];
-                setInterval(() => {
+                let time=setInterval(() => {
                   arr[i].head=temp
+                  clearInterval(time)
                 },3000);
               }
             });
@@ -284,12 +285,12 @@ export default {
       // });
       let success = await this.request(list);
       if (this.firstLoad) {
-        // this.alllist.forEach(v => {
-        //   if (v.id !== this.activeId) {
-        //     this.request(v);
-        //   }
-        // });
-        // this.firstLoad = false;
+        this.alllist.forEach(v => {
+          if (v.id !== this.activeId) {
+            this.request(v);
+          }
+        });
+        this.firstLoad = false;
       }
       console.log(list);
       console.log(success);
@@ -402,6 +403,7 @@ export default {
   }
   .footer {
     height: 1rem;
+    color:#aaa;
   }
   .right-bottom {
     position: absolute;

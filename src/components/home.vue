@@ -24,13 +24,13 @@
       </el-popover>
       <div class="swiper-container swiper1">
         <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="v in alllist" :key="v.name">
-            <div class="swiper-container swiper2" :class="'swiper1-'+v.id">
+          <div class="swiper-slide" v-for="list in alllist" :key="list.name">
+            <div class="swiper-container swiper2" :class="'swiper1-'+list.id">
               <div class="swiper-wrapper">
                 <div class="swiper-slide">
                   <div class="list flex">
-                    <transition v-for="(v,i) in listdata" :key="i">
                       <div
+                        v-for="(v,i) in listdata" :key="i"
                         class="card flex-col flex-center"
                         @click="goto(v)"
                         v-observe="'animated zoomIn faster'"
@@ -40,7 +40,6 @@
                         <div class="title">{{v.ownerId}}</div>
                         <div>{{v.customItem2__c}}</div>
                       </div>
-                    </transition>
                   </div>
                   <div v-observe.always="getlistdata" class="footer"></div>
                 </div>
@@ -97,7 +96,7 @@ export default {
           fontsize: ""
         }
       },
-      cc: 3,
+      cc:2,
       alllist: [
         {
           id: "1",
@@ -232,7 +231,7 @@ export default {
       //     });
       msg();
       this.listdata = this.listdata.concat(
-        Array.from({ length: this.size }, () => {
+        Array.from({ length: this.size*2 }, () => {
           return {
             //红人平台名称
             name: "微博",
@@ -326,8 +325,8 @@ export default {
     background: #e9f1ede3;
   }
   .swiper2 .swiper-slide {
-    height: auto !important;
-    width: auto !important;
+    // height: auto !important;
+    // width: auto !important;
   }
   .list {
     justify-content: space-between;

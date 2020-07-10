@@ -1,15 +1,18 @@
 <template>
   <div id="app">
     <Home />
+    <!-- <Test /> -->
   </div>
 </template>
 
 <script>
 import Home from "@/components/home.vue";
+// import Test from "@/components/test.vue";
 export default {
   name: "app",
   components: {
     Home,
+    // Test
   }
 };
 </script>

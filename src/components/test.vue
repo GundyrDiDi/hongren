@@ -3,32 +3,38 @@
 <template>
   <div class="swiper-container swiper-container-h">
     <div class="swiper-wrapper">
-      <div class="swiper-slide">Horizontal Slide 1</div>
-      <div class="swiper-slide">
-        <div class="swiper-container swiper-container-v">
+      <div class="swiper-slide" v-for="(v,i) in 4" :key="v">
+        <div class="swiper-container swiper-container-v" :class="'swiper-container-v'+i">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">Vertical Slide 1</div>
-            <div class="swiper-slide">Vertical Slide 2</div>
-            <div class="swiper-slide">Vertical Slide 3</div>
-            <div class="swiper-slide">Vertical Slide 4</div>
-            <div class="swiper-slide">Vertical Slide 5</div>
+            <div class="swiper-slide">
+              <div style="height:1000px;">
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+                1<br/>
+              </div>
+            </div>
+            <div class="swiper-slide"></div>
           </div>
           <div class="swiper-pagination swiper-pagination-v"></div>
         </div>
       </div>
-      <div class="swiper-slide">
-          <div class="swiper-container swiper-container-v2">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">Vertical Slide 1</div>
-            <div class="swiper-slide">Vertical Slide 2</div>
-            <div class="swiper-slide">Vertical Slide 3</div>
-            <div class="swiper-slide">Vertical Slide 4</div>
-            <div class="swiper-slide">Vertical Slide 5</div>
-          </div>
-          <div class="swiper-pagination swiper-pagination-v"></div>
-        </div>
-      </div>
-      <div class="swiper-slide">Horizontal Slide 4</div>
     </div>
     <!-- Add Pagination -->
     <div class="swiper-pagination swiper-pagination-h"></div>
@@ -38,59 +44,64 @@
 
 <!-- Initialize Swiper -->
 <script>
-import Swiper from "swiper";
 export default {
   name: "test",
   data() {
     return {};
   },
   mounted() {
-    var swiperH = new Swiper(".swiper-container-h", {
+    var swiperH = this.$swiper(".swiper-container-h", {
     //   spaceBetween: 50,
       pagination: {
         el: ".swiper-pagination-h",
         clickable: true
       }
     });
-    var swiperV = new Swiper(".swiper-container-v", {
-      direction: "vertical",
-      freeMode:true,
-    //   spaceBetween: 50,
-    });
-    var swiperV2 = new Swiper(".swiper-container-v2", {
-      direction: "vertical",
-      freeMode:true,
-    //   spaceBetween: 50,
-    });
-    console.log(swiperH,swiperV,swiperV2)
+    new Array(4).fill(0).forEach((v,i)=>{
+      var swiperV2 = this.$swiper(".swiper-container-v"+i, {
+        direction: "vertical",
+        freeMode:true,
+      //   spaceBetween: 50,
+      });
+      setTimeout(()=>{
+      swiperV2.updateSlides();
+      },1000)
+      console.log(swiperV2)
+    })
+    console.log(swiperH)
   }
 };
 </script>
-<style scoped>
+<style>
+  html,
+    body {
+      position: relative;
+      height: 100%;
+    }
 
+    body {
+      background: #eee;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 140px;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+</style>
+<style scoped>
 .swiper-container {
   width: 100%;
   height: 100%;
 }
-
+.swiper-slide .swiper-slide{
+  height:auto !important;
+}
 .swiper-slide {
+  
   text-align: center;
-  font-size: 18px;
+  font-size: 180px;
   background: #fff;
-
-  /* Center slide text vertically */
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
   display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  -webkit-align-items: center;
-  align-items: center;
 }
 
 .swiper-container-v {

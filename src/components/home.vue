@@ -119,11 +119,6 @@ export default {
   },
   watch: {
     font() {
-      let font = parseInt(this.font);
-      this.$Message.config({
-        top: font * 4,
-        duration: 0
-      });
       this.initColumn();
     },
     cc() {

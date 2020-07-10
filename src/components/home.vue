@@ -206,7 +206,10 @@ export default {
       this.getlistdata();
     },
     request(list) {
-      if (list.loading) return;
+      if (list.loading){
+        list.msg()
+        return;
+      }
       list.loading = true;
       return this.axios
         .post("http://10.228.88.220:17734/rest/api/red/queryAll", {
@@ -248,23 +251,23 @@ export default {
       console.warn("getlistdata");
       let list = this.alllist.find(v => v.id === this.activeId);
       if (list.complete) return;
-      let msg = this.$Message.loading({
+      list.msg = this.$Message.loading({
         content: "加载中...",
         duration: 0
       });
       let success = await this.request(list);
       if (this.firstLoad) {
-        // this.alllist.forEach(v => {
-        //   if (v.id !== this.activeId) {
-        //     this.request(v);
-        //   }
-        // });
-        // this.firstLoad = false;
+        this.alllist.forEach(v => {
+          if (v.id !== this.activeId) {
+            this.request(v);
+          }
+        });
+        this.firstLoad = false;
       }
       console.log(list)
       console.log(success)
       if (success) {
-        msg();
+        list.msg();
       }
       await wait();
       // list.listdata.push(

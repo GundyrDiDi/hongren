@@ -312,6 +312,9 @@ export default {
     this.alllist.forEach(v => {
       v.swiper = this.initinside(v.id); //这里这个属性值不能被vue观测，否则会被改变该值的__proto__
     });
+    this.slidestyle.forEach((v,i)=>{
+      v.left=this.deviceWidth*i+'px'
+    })
   }
 };
 </script>
@@ -372,6 +375,9 @@ export default {
   }
   .outside{
     height:100% !important;
+    position:absolute;
+    width:100vw;
+    top:0;
   }
   .swiper2 .swiper-slide {
     height: auto !important;

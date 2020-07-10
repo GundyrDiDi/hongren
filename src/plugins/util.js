@@ -39,7 +39,7 @@ export function loadimg(src, localSrc) {
       resolve(localSrc);
     }
     setTimeout(() => {
-      resolve(localSrc);
-    }, 2000);
+      resolve(src);
+    }, 3000);
   });
 }

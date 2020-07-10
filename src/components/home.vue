@@ -24,7 +24,12 @@
       </el-popover>
       <div class="swiper-container swiper1">
         <div class="swiper-wrapper">
-          <div class="swiper-slide outside" :style="slidestyle[index]" v-for="(list,index) in alllist" :key="list.name">
+          <div
+            class="swiper-slide outside"
+            :style="slidestyle[index]"
+            v-for="(list,index) in alllist"
+            :key="list.name"
+          >
             <div class="swiper-container swiper2" :class="'swiper1-'+list.id">
               <div class="swiper-wrapper">
                 <div class="swiper-slide">
@@ -45,7 +50,11 @@
                       </div>
                     </div>
                   </div>
-                  <div :data-id="list.id" v-observe.always="getlistdata" class="footer flex-center">{{list.complete?'到底了~':''}}</div>
+                  <div
+                    :data-id="list.id"
+                    v-observe.always="getlistdata"
+                    class="footer flex-center"
+                  >{{list.complete?'到底了~':''}}</div>
                 </div>
               </div>
             </div>
@@ -115,12 +124,7 @@ export default {
       ),
       defaultHead: require("@/assets/user.png"),
       visible: false,
-      slidestyle:[
-        {},
-        {},
-        {},
-        {}
-      ]
+      slidestyle: [{}, {}, {}, {}]
     };
   },
   watch: {
@@ -132,11 +136,11 @@ export default {
       });
       this.initColumn();
     },
-    cc(now,old) {
+    cc(now, old) {
       this.initColumn();
-      if(now>old){
-        console.log(this.activeId)
-        this.alllist.find(v=>v.id===this.activeId).swiper.slideTo(0,600)
+      if (now > old) {
+        console.log(this.activeId);
+        this.alllist.find(v => v.id === this.activeId).swiper.slideTo(0, 600);
       }
     },
     index() {
@@ -180,7 +184,6 @@ export default {
       this.column.height = (this.deviceHeight - font * 3) / num + "px";
       this.size = this.cc * num * 2;
       this.updateinside();
-
     },
     changeTab(v, i) {
       this.index = i;
@@ -216,19 +219,19 @@ export default {
     loadmore(id) {
       this.getlistdata(id);
     },
-    toformat(num){
+    toformat(num) {
       // if(num>10000){
       //   return (num / 10000).toFixed(1) + "w 粉丝"
       // }else{
       //   return (num / 1000).toFixed(2) + "k 粉丝"
       // }
-      return num + "w 粉丝"
+      return num + " w 粉丝";
     },
     request(list) {
       if (list.loading) return;
       list.loading = true;
       return this.axios
-        .post("/rest/api/red/queryAll", {
+        .post("http://10.228.88.220:17734/rest/api/red/queryAll", {
           current: list.listdata.length,
           size: this.size,
           customItem1c: list.id
@@ -247,16 +250,22 @@ export default {
             let heads = await Promise.all(
               data.map(v => loadimg(v.head, this.defaultHead))
             );
-            data.forEach((v, i) => {
-              v.head = heads[i];
+            data.forEach((v, i, arr) => {
+              if (v.head !== heads[i]) {
+                let temp=v.head
+                v.head = heads[i];
+                setInterval(() => {
+                  arr[i].head=temp
+                },3000);
+              }
             });
             list.listdata.push(...data);
             list.page++;
             list.loading = false;
             this.updateinside();
-            console.log(content)
-            console.log(list.listdata.length)
-            if (list.listdata.length >=content) {
+            console.log(content);
+            console.log(list.listdata.length);
+            if (list.listdata.length >= content) {
               list.complete = true;
             }
           }
@@ -264,8 +273,8 @@ export default {
         });
     },
     async getlistdata(id) {
-      if(!id){
-        id=this.activeId
+      if (!id) {
+        id = this.activeId;
       }
       console.warn("getlistdata");
       let list = this.alllist.find(v => v.id === id);
@@ -283,28 +292,12 @@ export default {
         // });
         // this.firstLoad = false;
       }
-      console.log(list)
-      console.log(success)
+      console.log(list);
+      console.log(success);
       // if (success) {
       //   list.msg();
       // }
       await wait();
-      // list.listdata.push(
-      //   ...Array.from({ length: this.size }, () => {
-      //     return {
-      //       user: "白小染ECHO",
-      //       //粉丝数
-      //       fans: "15.3w 粉丝",
-      //       //头像
-      //       head: require("../assets/head1.jpeg")
-      //     };
-      //   })
-      // );
-      // msg();
-      // this.updateinside();
-      // if (list.listdata.length >= 50) {
-      //   list.complete = true;
-      // }
     }
   },
   mounted() {
@@ -313,9 +306,9 @@ export default {
     this.alllist.forEach(v => {
       v.swiper = this.initinside(v.id); //这里这个属性值不能被vue观测，否则会被改变该值的__proto__
     });
-    this.slidestyle.forEach((v,i)=>{
-      v.left=this.deviceWidth*i+'px'
-    })
+    this.slidestyle.forEach((v, i) => {
+      v.left = this.deviceWidth * i + "px";
+    });
   }
 };
 </script>

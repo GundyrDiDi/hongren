@@ -132,7 +132,7 @@ export default {
       this.initColumn();
     },
     cc(now, old) {
-      localStorage["column"] == now;
+      localStorage["column"] = now;
       this.initColumn();
       if (now > old) {
         this.alllist.find(v => v.id === this.activeId).swiper.slideTo(0, 600);
@@ -250,17 +250,13 @@ export default {
               let heads = await Promise.all(
                 data.map(v => loadimg(v.head, this.defaultHead))
               );
-              data.forEach((v, i, arr) => {
+              data.forEach((v, i) => {
                 const load = async () => {
                   if (v.head !== heads[i]) {
-                    let temp = v.head;
                     v.head = heads[i];
-                    arr[i].head = temp;
-                  } else {
-                    clearInterval(time);
                   }
                 };
-                let time = setInterval(load, 3000);
+                setTimeout(load, 3000);
               });
               list.listdata.push(...data);
               list.page++;

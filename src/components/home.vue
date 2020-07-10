@@ -82,7 +82,7 @@ export default {
           radio: 1,
           width: "44%",
           height: 0,
-          imgsize: "82%",
+          imgsize: "78%",
           fontsize: 1
         },
         "3": {
@@ -206,7 +206,6 @@ export default {
       return this.$swiper(".swiper1-" + name, {
         direction: "vertical",
         slidesPerView: "auto",
-        allowSlidePrev:false,
         resistanceRatio: 0.7,
         freeMode: true
       });
@@ -229,7 +228,7 @@ export default {
       if (list.loading) return;
       list.loading = true;
       return this.axios
-        .post("http://10.228.88.9:8000/rest/api/red/queryAll", {
+        .post("http://10.228.88.220:17734/rest/api/red/queryAll", {
           current: list.listdata.length,
           size: this.size,
           customItem1c: list.id

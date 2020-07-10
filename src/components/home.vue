@@ -82,7 +82,7 @@ export default {
           radio: 1,
           width: "44%",
           height: 0,
-          imgsize: "82%",
+          imgsize: "78%",
           fontsize: 1
         },
         "3": {

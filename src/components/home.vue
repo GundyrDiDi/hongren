@@ -24,7 +24,7 @@
       </el-popover>
       <div class="swiper-container swiper1">
         <div class="swiper-wrapper">
-          <div class="swiper-slide outside" v-for="list in alllist" :key="list.name">
+          <div class="swiper-slide outside" :style="slidestyle[index]" v-for="(list,index) in alllist" :key="list.name">
             <div class="swiper-container swiper2" :class="'swiper1-'+list.id">
               <div class="swiper-wrapper">
                 <div class="swiper-slide">
@@ -114,7 +114,13 @@ export default {
         })
       ),
       defaultHead: require("@/assets/user.png"),
-      visible: false
+      visible: false,
+      slidestyle:[
+        {},
+        {},
+        {},
+        {}
+      ]
     };
   },
   watch: {
@@ -126,8 +132,12 @@ export default {
       });
       this.initColumn();
     },
-    cc() {
+    cc(now,old) {
       this.initColumn();
+      if(now>old){
+        console.log(this.activeId)
+        this.alllist.find(v=>v.id===this.activeId).swiper.slideTo(0,600)
+      }
     },
     index() {
       if (this.index === parseInt(this.index)) {
@@ -170,6 +180,7 @@ export default {
       this.column.height = (this.deviceHeight - font * 3) / num + "px";
       this.size = this.cc * num * 2;
       this.updateinside();
+
     },
     changeTab(v, i) {
       this.index = i;
@@ -205,24 +216,31 @@ export default {
     loadmore(id) {
       this.getlistdata(id);
     },
+    toformat(num){
+      if(num>10000){
+        return (num / 10000).toFixed(1) + "w 粉丝"
+      }else{
+        return (num / 1000).toFixed(2) + "k 粉丝"
+      }
+    },
     request(list) {
       if (list.loading) return;
       list.loading = true;
       return this.axios
-        .post("http://10.228.88.220:17734/rest/api/red/queryAll", {
-          current: list.page,
+        .post("http://10.228.88.9:8000/rest/api/red/queryAll", {
+          current: list.listdata.length,
           size: this.size,
           customItem1c: list.id
         })
         .then(async res => {
           if (res.status === 200) {
             // console.log(res.data);
-            let { content, totalElements: total } = res.data;
-            let data = content.map(v => ({
+            let { totalElements, content } = res.data;
+            let data = totalElements.map(v => ({
               url: v.customItem13c,
               head: v.imgUrl,
               user: v.name,
-              fans: (v.customItem3c / 10000).toFixed(1) + "w 粉丝"
+              fans: this.toformat(v.customItem3c)
             }));
 
             let heads = await Promise.all(
@@ -235,9 +253,9 @@ export default {
             list.page++;
             list.loading = false;
             this.updateinside();
-            console.log(total.total)
+            console.log(content)
             console.log(list.listdata.length)
-            if (list.listdata.length >=total.total) {
+            if (list.listdata.length >=content) {
               list.complete = true;
             }
           }
@@ -353,7 +371,7 @@ export default {
     background: #e9f1ede3;
   }
   .outside{
-    height:100%;
+    height:100% !important;
   }
   .swiper2 .swiper-slide {
     height: auto !important;

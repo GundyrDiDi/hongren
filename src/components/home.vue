@@ -45,7 +45,7 @@
                       </div>
                     </div>
                   </div>
-                  <div :data-id="list.id" v-observe.always="getlistdata" class="footer">{{list.complete?'到底了~':''}}</div>
+                  <div :data-id="list.id" v-observe.always="getlistdata" class="footer flex-center">{{list.complete?'到底了~':''}}</div>
                 </div>
               </div>
             </div>
@@ -206,6 +206,7 @@ export default {
       return this.$swiper(".swiper1-" + name, {
         direction: "vertical",
         slidesPerView: "auto",
+        allowSlidePrev:false,
         resistanceRatio: 0.7,
         freeMode: true
       });
@@ -217,11 +218,12 @@ export default {
       this.getlistdata(id);
     },
     toformat(num){
-      if(num>10000){
-        return (num / 10000).toFixed(1) + "w 粉丝"
-      }else{
-        return (num / 1000).toFixed(2) + "k 粉丝"
-      }
+      // if(num>10000){
+      //   return (num / 10000).toFixed(1) + "w 粉丝"
+      // }else{
+      //   return (num / 1000).toFixed(2) + "k 粉丝"
+      // }
+      return num + "w 粉丝"
     },
     request(list) {
       if (list.loading) return;

@@ -10,24 +10,36 @@ export function flexView() {
     recalc();
   });
   const recalc = () => {
-    this.font=docEl.fontSize = 18 * (window.innerWidth / 375) + "px";
+    this.font = docEl.fontSize = 18 * (window.innerWidth / 375) + "px";
   };
   window.addEventListener("orientationchange", recalc, false);
   window.addEventListener("pageshow", recalc, false);
   document.addEventListener("DOMContentLoaded", recalc, false);
 }
 export function wait(time = 1000, promise) {
-  let delay = new Promise((resolve) => {
+  let delay = new Promise(resolve => {
     setTimeout(() => {
       resolve();
     }, time);
   });
   if (promise instanceof Promise) {
-    delay = Promise.all([promise, delay]).then((res) => res[0]);
+    delay = Promise.all([promise, delay]).then(res => res[0]);
   }
   return delay;
 }
 
-export function preload(){
-    
+export function loadimg(src, localSrc) {
+  return new Promise((resolve) => {
+    let img = new Image();
+    img.src = src;
+    img.onload = () => {
+      resolve(src);
+    };
+    img.onerror =()=>{
+      resolve(localSrc);
+    }
+    setTimeout(() => {
+      resolve(localSrc);
+    }, 2000);
+  });
 }

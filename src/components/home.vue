@@ -10,15 +10,15 @@
       <b :style="translateX"></b>
     </div>
     <div class="content">
-      <el-popover placement="left" trigger="click">
-        <div>
+      <el-popover placement="left" trigger="manual" v-model="visible">
+        <div @click="visible = false">
           <el-radio-group v-model="cc">
             <el-radio-button :label="2" :key="2">2</el-radio-button>
             <el-radio-button :label="3" :key="3">3</el-radio-button>
             <el-radio-button :label="4" :key="4">4</el-radio-button>
           </el-radio-group>
         </div>
-        <div slot="reference" class="right-bottom flex-center">
+        <div slot="reference" class="right-bottom flex-center" @click="visible = !visible">
           <i class="el-icon-menu"></i>
         </div>
       </el-popover>
@@ -29,19 +29,23 @@
               <div class="swiper-wrapper">
                 <div class="swiper-slide">
                   <div class="list flex">
-                      <div
-                        v-for="(v,i) in listdata" :key="i"
-                        class="card flex-col flex-center"
-                        @click="goto(v)"
-                        v-observe="'animated zoomIn faster'"
-                        :style="{width:column.width,height:column.height}"
-                      >
-                        <img :style="{width:column.imgsize}" :src="v.head" alt />
-                        <div class="title">{{v.ownerId}}</div>
-                        <div>{{v.customItem2__c}}</div>
+                    <div
+                      v-for="v in list.listdata"
+                      :key="v.id"
+                      class="card flex-col flex-center"
+                      @click="goto(v)"
+                      v-observe="'animated zoomIn faster'"
+                      :style="{width:column.width,height:column.height}"
+                    >
+                      <img :style="{width:column.imgsize}" :src="v.head" alt />
+                      <div :style="{fontSize:column.fontsize+'rem'}" class="title">{{v.user}}</div>
+                      <div :style="{fontSize:.8*column.fontsize+'rem'}">
+                        {{v.fans}}
+                        <span class="el-icon-arrow-right"></span>
                       </div>
+                    </div>
                   </div>
-                  <div v-observe.always="getlistdata" class="footer"></div>
+                  <div v-observe.always="loadmore" class="footer">{{list.complete?'到底了~':''}}</div>
                 </div>
               </div>
             </div>
@@ -54,7 +58,7 @@
 
 <script>
 // import peopleList from "./people-list";
-import { flexView, wait } from "../plugins/util";
+import { flexView, wait, loadimg } from "../plugins/util";
 export default {
   name: "Home",
   components: {
@@ -78,64 +82,42 @@ export default {
           radio: 1,
           width: "44%",
           height: 0,
-          imgsize: "85%",
-          fontsize: ""
+          imgsize: "82%",
+          fontsize: 1
         },
         "3": {
           radio: 1.3,
           width: "28%",
           height: 0,
-          imgsize: "80%",
-          fontsize: ""
+          imgsize: "78%",
+          fontsize: 0.8
         },
         "4": {
           radio: 1.5,
           width: "21%",
           height: 0,
-          imgsize: "70%",
-          fontsize: ""
+          imgsize: "67%",
+          fontsize: 0.6
         }
       },
-      cc:2,
-      alllist: [
-        {
-          id: "1",
-          name: "微博",
-          listdata: [],
+      cc: 2,
+      firstLoad: true,
+      alllist: Object.entries({ 微博: 1, 小红书: 5, B站: 3, 抖音: 4 }).map(
+        ([name, id]) => ({
+          id,
+          name,
           page: 1,
-          swiper: null
-        },
-        {
-          id: "5",
-          name: "小红书",
           listdata: [],
-          page: 1,
-          swiper: null
-        },
-        {
-          id: "3",
-          name: "B站",
-          listdata: [],
-          page: 1,
-          swiper: null
-        },
-        {
-          id: "4",
-          name: "抖音",
-          listdata: [],
-          page: 1,
-          swiper: null
-        }
-      ],
-      listdata: []
+          loading: false,
+          preload: false,
+          nextlist: []
+        })
+      ),
+      defaultHead: require("@/assets/user.png"),
+      visible: false
     };
   },
   watch: {
-    listdata() {
-      //   setTimeout(() => {
-      //     this.s2.updateSlides();
-      //   }, this.delay);
-    },
     font() {
       let font = parseInt(this.font);
       this.$Message.config({
@@ -146,9 +128,14 @@ export default {
     },
     cc() {
       this.initColumn();
-      //   setTimeout(() => {
-      //     this.s2.updateSlides();
-      //   }, this.delay);
+    },
+    index() {
+      if (this.index === parseInt(this.index)) {
+        this.activeId = this.alllist[this.index].id;
+      }
+    },
+    activeId(id) {
+      localStorage["platform_id"] = id;
     }
   },
   computed: {
@@ -164,6 +151,13 @@ export default {
   },
   methods: {
     flexView,
+    updateinside() {
+      setTimeout(() => {
+        this.alllist.forEach(v => {
+          v.swiper.updateSlides();
+        });
+      }, this.delay);
+    },
     initColumn() {
       let font = parseInt(this.font);
       let num = parseInt(
@@ -172,12 +166,12 @@ export default {
             this.deviceWidth *
             this.column.radio)
       );
-      console.log((this.deviceHeight - font * 3) / num);
+      // console.log((this.deviceHeight - font * 3) / num);
       this.column.height = (this.deviceHeight - font * 3) / num + "px";
-      this.size = this.cc * num;
+      this.size = this.cc * num * 2;
+      this.updateinside();
     },
     changeTab(v, i) {
-      this.activeTab = v.id;
       this.index = i;
       this.s1.slideTo(i, 500);
     },
@@ -202,69 +196,98 @@ export default {
         direction: "vertical",
         slidesPerView: "auto",
         resistanceRatio: 0.7,
-        freeMode: true,
-        on:{
-            progress(){
-                console.log(this)
-            }
-        }
+        freeMode: true
       });
     },
-    goto() {},
+    goto(v) {
+      location.href = v.url;
+    },
     loadmore() {
       this.getlistdata();
     },
+    request(list) {
+      if (list.loading) return;
+      list.loading = true;
+      return this.axios
+        .post("http://10.228.88.220:17734/rest/api/red/queryAll", {
+          current: list.page,
+          size: this.size,
+          customItem1c: list.id
+        })
+        .then(async res => {
+          if (res.status === 200) {
+            // console.log(res.data);
+            let { content, totalElements: total } = res.data;
+            let data = content.map(v => ({
+              url: v.customItem13c,
+              head: v.imgUrl,
+              user: v.name,
+              fans: (v.customItem3c / 10000).toFixed(1) + "w 粉丝"
+            }));
+
+            let heads = await Promise.all(
+              data.map(v => loadimg(v.head, this.defaultHead))
+            );
+            data.forEach((v, i) => {
+              v.head = heads[i];
+            });
+            list.listdata.push(...data);
+            list.page++;
+            list.loading = false;
+            this.updateinside();
+            console.log(total.total)
+            console.log(list.listdata.length)
+            if (list.listdata.length >=total.total) {
+              list.complete = true;
+            }
+          }
+          return res.status === 200;
+        });
+    },
     async getlistdata() {
-      console.log("getlistdata");
+      console.warn("getlistdata");
+      let list = this.alllist.find(v => v.id === this.activeId);
+      if (list.complete) return;
       let msg = this.$Message.loading({
-        content: "加载中, 请稍侯...",
+        content: "加载中...",
         duration: 0
       });
+      let success = await this.request(list);
+      if (this.firstLoad) {
+        this.alllist.forEach(v => {
+          if (v.id !== this.activeId) {
+            this.request(v);
+          }
+        });
+        this.firstLoad = false;
+      }
+      if (success) {
+        msg();
+      }
       await wait();
-      //   this.axios
-      //     .post("http://10.228.88.9:8000/rest/api/red/queryAll", {
-      //       current: 1,
-      //       size: 10
-      //     })
-      //     .then(res => {
-      //       console.log(res);
-      //     });
-      msg();
-      this.listdata = this.listdata.concat(
-        Array.from({ length: this.size*2 }, () => {
-          return {
-            //红人平台名称
-            name: "微博",
-            //业务类型
-            entityType: "",
-            //所有人
-            ownerId: "白小染ECHO",
-            //粉丝数
-            customItem2__c: "15.3w粉丝",
-            //头像
-            head: require("../assets/head1.jpeg"),
-            //所属部门
-            dimDepart: "",
-            //创建人
-            createdBy: "",
-            //创建日期
-            createdAt: "",
-            //修改人
-            updatedBy: "",
-            //修改日期
-            updatedAt: "",
-            //锁定状态
-            lockStatus: ""
-          };
-        })
-      );
+      // list.listdata.push(
+      //   ...Array.from({ length: this.size }, () => {
+      //     return {
+      //       user: "白小染ECHO",
+      //       //粉丝数
+      //       fans: "15.3w 粉丝",
+      //       //头像
+      //       head: require("../assets/head1.jpeg")
+      //     };
+      //   })
+      // );
+      // msg();
+      // this.updateinside();
+      // if (list.listdata.length >= 50) {
+      //   list.complete = true;
+      // }
     }
   },
   mounted() {
     this.flexView();
     this.initswiper();
     this.alllist.forEach(v => {
-      v.swiper = this.initinside(v.id);
+      v.swiper = this.initinside(v.id); //这里这个属性值不能被vue观测，否则会被改变该值的__proto__
     });
   }
 };
@@ -325,8 +348,8 @@ export default {
     background: #e9f1ede3;
   }
   .swiper2 .swiper-slide {
-    // height: auto !important;
-    // width: auto !important;
+    height: auto !important;
+    width: auto !important;
   }
   .list {
     justify-content: space-between;
@@ -337,9 +360,9 @@ export default {
       //   width: 28%;
       text-align: center;
       //   margin-top: 0.6rem;
-      font-size: var(--xxsfont);
     }
     img {
+      margin: 2%;
       //   width: 80%;
       border-radius: 50%;
       filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
@@ -351,7 +374,10 @@ export default {
       font-weight: 600;
       overflow: hidden;
       padding: 0 0.5rem;
-      font-size: var(--xsfont);
+    }
+    .el-icon-arrow-right {
+      color: #90cafb;
+      font-weight: bold;
     }
   }
   .footer {
@@ -370,6 +396,9 @@ export default {
     z-index: 10;
     font-size: var(--xmfont);
     color: #fff;
+  }
+  .el-radio-button__inner {
+    font-size: var(--mfont);
   }
 }
 </style>

@@ -26,8 +26,7 @@
         <div class="swiper-wrapper">
           <div
             class="swiper-slide outside"
-            :style="slidestyle[index]"
-            v-for="(list,index) in alllist"
+            v-for="(list) in alllist"
             :key="list.name"
           >
             <div class="swiper-container swiper2" :class="'swiper1-'+list.id">
@@ -231,7 +230,7 @@ export default {
       if (list.loading) return;
       list.loading = true;
       return this.axios
-        .post("http://10.228.88.220:17734/rest/api/red/queryAll", {
+        .post("/rest/api/red/queryAll", {
           current: list.listdata.length,
           size: this.size,
           customItem1c: list.id
@@ -367,12 +366,7 @@ export default {
   .swiper1-4 {
     background: #e9f1ede3;
   }
-  .outside{
-    height:100% !important;
-    position:absolute;
-    width:100vw;
-    top:0;
-  }
+  
   .swiper2 .swiper-slide {
     height: auto !important;
     width: auto !important;

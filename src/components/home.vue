@@ -132,9 +132,9 @@ export default {
       this.initColumn();
     },
     cc(now, old) {
+      localStorage["column"] == now;
       this.initColumn();
       if (now > old) {
-        console.log(this.activeId);
         this.alllist.find(v => v.id === this.activeId).swiper.slideTo(0, 600);
       }
     },
@@ -144,6 +144,7 @@ export default {
       }
     },
     activeId(id) {
+      console.log(id);
       localStorage["platform_id"] = id;
     }
   },
@@ -208,68 +209,72 @@ export default {
         freeMode: true
       });
     },
-    goto(v) {
-      location.href = v.url;
+    goto({ url }) {
+      if (!(url + "").trim().startsWith("http")) url = "http://" + url;
+      location.href = url;
     },
     loadmore(id) {
       this.getlistdata(id);
     },
     toformat(num) {
-      if(num>10000){
-        return (num / 10000).toFixed(1) + "W 粉丝"
-      }else if(num>1000){
-        return (num / 1000).toFixed(2) + "K 粉丝"
-      }else{
-        return num +' 粉丝'
+      if (num > 10000) {
+        return (num / 10000).toFixed(1) + "W 粉丝";
+      } else if (num > 1000) {
+        return (num / 1000).toFixed(2) + "K 粉丝";
+      } else {
+        return num + " 粉丝";
       }
     },
     request(list) {
       if (list.loading) return;
       list.loading = true;
-      return this.axios
-        .post("/rest/api/red/queryAll", {
-          current: list.listdata.length,
-          size: this.size,
-          customItem1c: list.id
-        })
-        .then(async res => {
-          if (res.status === 200) {
-            // console.log(res.data);
-            let { totalElements, content } = res.data;
-            let data = totalElements.map(v => ({
-              url: v.customItem13c,
-              head: v.imgUrl,
-              user: v.name,
-              fans: this.toformat(v.customItem3c)
-            }));
+      return (
+        this.axios
+          // .post("/rest/api/red/queryAll", {
+          .post("http://10.228.88.220:17734/rest/api/red/queryAll", {
+            current: list.listdata.length,
+            size: this.size,
+            customItem1c: list.id
+          })
+          .then(async res => {
+            if (res.status === 200) {
+              // console.log(res.data);
+              let { totalElements, content } = res.data;
+              let data = totalElements.map(v => ({
+                url: v.customItem13c,
+                head: v.imgUrl,
+                user: v.name,
+                fans: this.toformat(v.customItem3c)
+              }));
 
-            let heads = await Promise.all(
-              data.map(v => loadimg(v.head, this.defaultHead))
-            );
-            data.forEach((v, i, arr) => {
-              const load = async () => {
-                if (v.head !== heads[i]) {
-                  let temp = v.head;
-                  v.head = heads[i];
-                  arr[i].head = temp;
-                }else{
-                  clearInterval(time);
-                }
-              };
-              let time = setInterval(load, 3000);
-            });
-            list.listdata.push(...data);
-            list.page++;
-            list.loading = false;
-            this.updateinside();
-            console.log(content);
-            console.log(list.listdata.length);
-            if (list.listdata.length >= content) {
-              list.complete = true;
+              let heads = await Promise.all(
+                data.map(v => loadimg(v.head, this.defaultHead))
+              );
+              data.forEach((v, i, arr) => {
+                const load = async () => {
+                  if (v.head !== heads[i]) {
+                    let temp = v.head;
+                    v.head = heads[i];
+                    arr[i].head = temp;
+                  } else {
+                    clearInterval(time);
+                  }
+                };
+                let time = setInterval(load, 3000);
+              });
+              list.listdata.push(...data);
+              list.page++;
+              list.loading = false;
+              this.updateinside();
+              console.log(content);
+              console.log(list.listdata.length);
+              if (list.listdata.length >= content) {
+                list.complete = true;
+              }
             }
-          }
-          return res.status === 200;
-        });
+            return res.status === 200;
+          })
+      );
     },
     async getlistdata(id) {
       if (!id) {
@@ -305,6 +310,10 @@ export default {
     this.alllist.forEach(v => {
       v.swiper = this.initinside(v.id); //这里这个属性值不能被vue观测，否则会被改变该值的__proto__
     });
+    this.activeId = parseInt(localStorage["platform_id"]);
+    this.index = this.alllist.findIndex(v => v.id === this.activeId);
+    this.cc = parseInt(localStorage["column"])||3;
+    this.s1.slideTo(this.index);
     this.slidestyle.forEach((v, i) => {
       v.left = this.deviceWidth * i + "px";
     });

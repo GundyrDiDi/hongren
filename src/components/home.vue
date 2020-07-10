@@ -24,7 +24,7 @@
       </el-popover>
       <div class="swiper-container swiper1">
         <div class="swiper-wrapper">
-          <div class="swiper-slide" v-for="list in alllist" :key="list.name">
+          <div class="swiper-slide outside" v-for="list in alllist" :key="list.name">
             <div class="swiper-container swiper2" :class="'swiper1-'+list.id">
               <div class="swiper-wrapper">
                 <div class="swiper-slide">
@@ -351,6 +351,9 @@ export default {
   }
   .swiper1-4 {
     background: #e9f1ede3;
+  }
+  .outside{
+    height:100%;
   }
   .swiper2 .swiper-slide {
     height: auto !important;

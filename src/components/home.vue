@@ -269,10 +269,10 @@ export default {
       console.warn("getlistdata");
       let list = this.alllist.find(v => v.id === id);
       if (list.complete) return;
-      list.msg = this.$Message.loading({
-        content: "加载中...",
-        duration: 0
-      });
+      // list.msg = this.$Message.loading({
+      //   content: "加载中...",
+      //   duration: 0
+      // });
       let success = await this.request(list);
       if (this.firstLoad) {
         // this.alllist.forEach(v => {
@@ -284,9 +284,9 @@ export default {
       }
       console.log(list)
       console.log(success)
-      if (success) {
-        list.msg();
-      }
+      // if (success) {
+      //   list.msg();
+      // }
       await wait();
       // list.listdata.push(
       //   ...Array.from({ length: this.size }, () => {

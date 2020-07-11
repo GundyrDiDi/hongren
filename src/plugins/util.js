@@ -43,3 +43,9 @@ export function loadimg(src, localSrc) {
     }, 3000);
   });
 }
+export function throttle(fn,time){
+  return [fn,time]
+}
+export function randomnum(max,min=0){
+  return parseInt(Math.random()*max*min)
+}

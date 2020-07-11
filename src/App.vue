@@ -90,7 +90,7 @@ div {
 }
 ::-webkit-scrollbar {
   /*滚动条整体样式*/
-  width: 10px; /*高宽分别对应横竖滚动条的尺寸*/
+  width:.4rem; /*高宽分别对应横竖滚动条的尺寸*/
   height: 1px;
 }
 ::-webkit-scrollbar-thumb {
@@ -182,5 +182,18 @@ a {
 .box {
   box-shadow: 0 0 2px 8px rgba(0, 0, 0, 0.02), 0 0 2px 16px rgba(0, 0, 0, 0.02),
     0 0 2px 24px rgba(0, 0, 0, 0.02);
+}
+.hordivider,.verdivider{
+  position:relative;
+}
+.hordivider:before{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+  transform: scaleY(0.5);
 }
 </style>

@@ -336,30 +336,30 @@ export default {
     },
     async search() {
       console.warn("search");
-      // let result=await this.axios.post("/rest/api/red/queryAll",{
-      //   current:0,
-      //   size:500,
-      //   name:this.keyword
-      // }).then(res=>{
-      //   return res.data.totalElements.map(v => ({
-      //         url: v.customItem13c,
-      //         head: v.imgUrl,
-      //         user: v.name,
-      //         plat: v.customItem1c,
-      //         fans: this.toformat(v.customItem3c)
-      //       }));
-      // })
+      let result=await this.axios.post("/rest/api/red/queryAll",{
+        current:0,
+        size:500,
+        name:this.keyword
+      }).then(res=>{
+        return res.data.totalElements.map(v => ({
+              url: v.customItem13c,
+              head: v.imgUrl,
+              user: v.name,
+              plat: v.customItem1c,
+              fans: this.toformat(v.customItem3c)
+            }));
+      })
 
       //模拟
-      let result = Array.from({ length: this.size }, () => {
-        return {
-          url: "http://www.baidu.com",
-          head: require("@/assets/head1.jpeg"),
-          user: "67893848",
-          plat: [3, 4, 5][parseInt(Math.random() * 3)],
-          fans: "666 W 粉丝"
-        };
-      });
+      // let result = Array.from({ length: this.size }, () => {
+      //   return {
+      //     url: "http://www.baidu.com",
+      //     head: require("@/assets/head1.jpeg"),
+      //     user: "67893848",
+      //     plat: [3, 4, 5][parseInt(Math.random() * 3)],
+      //     fans: "666 W 粉丝"
+      //   };
+      // });
       //
       this.result.forEach((v, i) => {
         v.collapse = false;
@@ -440,45 +440,45 @@ export default {
           duration: 0
         });
       }
-      // let success = await this.request(list);
-      // if (this.firstLoad) {
-      //   this.alllist.forEach(v => {
-      //     if (v.id !== this.activeId) {
-      //       this.request(v);
-      //     }
-      //   });
-      //   this.firstLoad = false;
-      // }
-      // console.log(list);
-      // console.log(success);
-      // if (success) {
-      //   if(this.alllist.every(v=>!v.loading)){
-      //     this.msg&&this.msg();
-      //     this.msg=null
-      //   }
-      // }
+      let success = await this.request(list);
+      if (this.firstLoad) {
+        this.alllist.forEach(v => {
+          if (v.id !== this.activeId) {
+            this.request(v);
+          }
+        });
+        this.firstLoad = false;
+      }
+      console.log(list);
+      console.log(success);
+      if (success) {
+        if(this.alllist.every(v=>!v.loading)){
+          this.msg&&this.msg();
+          this.msg=null
+        }
+      }
 
       //模拟
-      list.loading = true;
+      // list.loading = true;
       await wait();
-      list.listdata.push(
-        ...Array.from({ length: this.size }, () => {
-          return {
-            url: "",
-            head: require("@/assets/head1.jpeg"),
-            user: "67893848",
-            plat: 1,
-            fans: "666 W 粉丝"
-          };
-        })
-      );
-      list.loading = false;
-      list.total = 100;
-      this.updateinside();
-      if (this.alllist.every(v => !v.loading)) {
-        this.msg && this.msg();
-        this.msg = null;
-      }
+      // list.listdata.push(
+      //   ...Array.from({ length: this.size }, () => {
+      //     return {
+      //       url: "",
+      //       head: require("@/assets/head1.jpeg"),
+      //       user: "67893848",
+      //       plat: 1,
+      //       fans: "666 W 粉丝"
+      //     };
+      //   })
+      // );
+      // list.loading = false;
+      // list.total = 100;
+      // this.updateinside();
+      // if (this.alllist.every(v => !v.loading)) {
+      //   this.msg && this.msg();
+      //   this.msg = null;
+      // }
     }
   },
   mounted() {
